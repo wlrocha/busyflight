@@ -1,50 +1,24 @@
 package com.travix.medusa.busyflights.domain.busyflights;
 
-public class BusyFlightsRequest {
+import com.travix.medusa.busyflights.validation.DateFormat;
+import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotNull;
+
+
+@Data
+public class BusyFlightsRequest
+{
+    @NotNull(message = "The origin is required")
     private String origin;
+    @NotNull(message = "The destination is required")
     private String destination;
+    @NotNull(message = "Departure date is required")
+    @DateFormat
     private String departureDate;
+    @DateFormat
     private String returnDate;
+    @Range(min=1, max = 4, message = "The number of passengers should be between 1 and 4")
     private int numberOfPassengers;
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(final String origin) {
-        this.origin = origin;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(final String destination) {
-        this.destination = destination;
-    }
-
-    public String getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(final String departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public String getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(final String returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public int getNumberOfPassengers() {
-        return numberOfPassengers;
-    }
-
-    public void setNumberOfPassengers(final int numberOfPassengers) {
-        this.numberOfPassengers = numberOfPassengers;
-    }
 }
