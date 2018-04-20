@@ -76,6 +76,20 @@ public class BusyFlightsApplicationTests {
 	}
 
 	@Test
+	public void fourLettersOriginShouldFail() throws Exception{
+		request.set(ORIGIN_KEY, "ABCD");
+		mvc.perform(get(FLIGHT_SEARCH_PATH).params(request))
+				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	public void twoLettersDestinationShouldFail() throws Exception{
+		request.set(DESTINATION_KEY, "TW");
+		mvc.perform(get(FLIGHT_SEARCH_PATH).params(request))
+				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
 	public void missingDepartureDateShouldFail() throws Exception{
 		request.remove(DEPARTURE_DATE_KEY);
 		mvc.perform(get(FLIGHT_SEARCH_PATH).params(request))
