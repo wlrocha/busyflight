@@ -6,8 +6,6 @@ import com.travix.medusa.busyflights.service.BusyFlightService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -20,8 +18,8 @@ public class BusyFlightController
 {
 	private final BusyFlightService busyFlightService;
 
-	@PostMapping("/flight/search")
-	public ResponseEntity<List<BusyFlightsResponse>> searchFlight(@Valid @RequestBody BusyFlightsRequest request)
+	@GetMapping("/flight/search")
+	public ResponseEntity<List<BusyFlightsResponse>> searchFlight(@Valid BusyFlightsRequest request)
 	{
 		List<BusyFlightsResponse> response = busyFlightService.searchFlight(request);
 		return ResponseEntity.ok(response);

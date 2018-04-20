@@ -20,15 +20,7 @@ to run the application use the following command:
 - To consume the flight service use the following endpoint:
 
 ```
-POST http://localhost:8080/flight/search
-Content-Type: application/json
-
-{"origin": "LHR",
- "destination": "AMS",
- "departureDate": "2011-12-03",
- "returnDate": "2018-11-01",
- "numberOfPassengers": 2
-}
+GET http://localhost:8080/flight/search?origin=LHR&destination=AMS&departureDate=2011-12-03&returnDate=2018-11-01&numberOfPassengers=2
 ```
 
 ## Run Integration Tests:
