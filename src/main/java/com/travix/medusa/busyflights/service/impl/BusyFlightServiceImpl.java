@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
@@ -22,26 +23,47 @@ public class BusyFlightServiceImpl implements BusyFlightService
 	private final List<SearchFlightSupplierService> suppliers;
 
 	@Override
-	public List<BusyFlightsResponse> searchFlight(BusyFlightsRequest request)
+	public List<BusyFlightsResponse> searchFlight(BusyFlightsRequest request) throws Exception
 	{
-		return suppliers.stream()
-							.parallel() //all providers can be requested in parallel
-							.map( s -> searchWithSupplier(request, s)) //do a search request to supplier s (same request for all)
-							.filter(Optional::isPresent)//if result is not present some error occurred
-							.map(Optional::get)//unwrap the list from the optional
-							.flatMap(List::stream)// merge all results in one stream (each result is a list)
-							.sorted(Comparator.comparing(BusyFlightsResponse::getFare))//sort by fare asc
-							.collect(Collectors.toList());
+
+		ExecutorService executor = Executors.newFixedThreadPool(suppliers.size());
+
+		List<Callable<List<BusyFlightsResponse>>> searchTasks =
+				suppliers.stream()
+						.map(supplier -> (Callable<List<BusyFlightsResponse>>)(() -> searchWithSupplier(request, supplier)))
+						.collect(Collectors.toList());
+
+		try
+		{
+			return executor.invokeAll(searchTasks)
+					.stream()
+					.map(future -> {
+						try {
+							return future.get();
+						}
+						catch (Exception e) {
+							throw new IllegalStateException(e);
+						}
+					})
+					.flatMap(List::stream)
+					.sorted(Comparator.comparing(BusyFlightsResponse::getFare))
+					.collect(Collectors.toList());
+		}
+		catch (InterruptedException e)
+		{
+			log.error(e.getMessage(), e);
+			throw new Exception("Error doing the search");
+		}
 	}
 
-	private Optional<List<BusyFlightsResponse>> searchWithSupplier(BusyFlightsRequest request, SearchFlightSupplierService p)
+	private List<BusyFlightsResponse> searchWithSupplier(BusyFlightsRequest request, SearchFlightSupplierService p)
 	{
 		try
 		{
-			return Optional.of(p.search(request));
+			return p.search(request);
 		} catch (Exception e){
 			log.error(e.getMessage(), e);
-			return Optional.empty();
+			return Collections.EMPTY_LIST;
 		}
 	}
 }

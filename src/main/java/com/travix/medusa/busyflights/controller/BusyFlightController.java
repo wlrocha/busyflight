@@ -19,14 +19,14 @@ public class BusyFlightController
 	private final BusyFlightService busyFlightService;
 
 	@GetMapping("/flight/search")
-	public ResponseEntity<List<BusyFlightsResponse>> searchFlight(@Valid BusyFlightsRequest request)
+	public ResponseEntity<List<BusyFlightsResponse>> searchFlight(@Valid BusyFlightsRequest request) throws Exception
 	{
 		List<BusyFlightsResponse> response = busyFlightService.searchFlight(request);
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/test")
-	public ResponseEntity<List<BusyFlightsResponse>> test() {
+	public ResponseEntity<List<BusyFlightsResponse>> test() throws Exception{
 		BusyFlightsRequest dummyRequest = new BusyFlightsRequest();
 		dummyRequest.setOrigin("LHR");
 		dummyRequest.setDestination("AMS");

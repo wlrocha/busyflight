@@ -1,10 +1,12 @@
 package com.travix.medusa.busyflights.supplier.toughjet.model;
 
+import com.travix.medusa.busyflights.supplier.commons.model.SearchRequest;
 import lombok.Data;
 
 
 @Data
-public class ToughJetRequest {
+public class ToughJetRequest implements SearchRequest
+{
 
     private String from;
     private String to;

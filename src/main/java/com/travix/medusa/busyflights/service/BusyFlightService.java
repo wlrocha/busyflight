@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface BusyFlightService
 {
-	List<BusyFlightsResponse> searchFlight(BusyFlightsRequest request);
+	List<BusyFlightsResponse> searchFlight(BusyFlightsRequest request) throws Exception;
 }
